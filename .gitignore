@@ -1,0 +1,35 @@
+# Rust build artifacts
+/target/
+**/target/
+
+# Wrangler / Cloudflare Worker build output
+/build/
+/worker/
+.wrangler/
+
+# Local secrets
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# Editor / OS scratch
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Scratch / temp dirs
+scratch/
+tmp/
+
+# Coverage / profiling
+*.profraw
+tarpaulin-report.html
+
+# Agent / tooling state
+.ntm/
+.claude/settings.local.json
+
+# bv (beads viewer) local config and caches
+.bv/
