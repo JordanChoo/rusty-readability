@@ -397,6 +397,25 @@ wrangler secret put CSVKEY
 wrangler deploy
 ```
 
+### Deploying via the Cloudflare Dashboard
+
+If you prefer not to use the Wrangler CLI, you can deploy directly through the Cloudflare dashboard by connecting your GitHub repository.
+
+1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com/) and navigate to **Workers & Pages**.
+2. Click **Create** and select **Import a repository**.
+3. Connect your GitHub account if you haven't already, then select the `rusty-readability` repository.
+4. Configure the build settings:
+   - **Build command:** leave empty (`wrangler.toml` defines the build command, which includes installing Rust if needed)
+   - **Deploy command:** `npx wrangler deploy`
+   - **Root directory:** leave empty (the project root contains `Cargo.toml` and `wrangler.toml`)
+5. Click **Deploy**. Cloudflare will clone the repo, compile the Rust source to WebAssembly, and deploy the Worker.
+6. After the first deploy completes, go to **Settings > Variables and Secrets** for the Worker and add the required secret:
+   - `CSVKEY` (the authentication key callers must provide via the `csvkey` query parameter)
+
+   Click **Encrypt** to store it as an encrypted secret.
+
+With this setup, every push to `main` triggers an automatic rebuild and deploy. You can disable automatic deployments or limit them to specific branches under **Settings > Builds & Deployments**.
+
 ### Configuration
 
 Request limits are compile-time constants in `crates/readability-worker/src/routes.rs`:
