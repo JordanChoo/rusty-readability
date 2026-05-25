@@ -3,7 +3,7 @@ main = "crates/readability-worker/build/worker/shim.mjs"
 compatibility_date = "2026-05-03"
 
 [build]
-command = "cd crates/readability-worker && worker-build --release"
+command = "curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable && . \"$HOME/.cargo/env\" && rustup target add wasm32-unknown-unknown && cargo install -q worker-build && cd crates/readability-worker && worker-build --release"
 
 [vars]
 READABILITY_VERSION = "1.0.0"

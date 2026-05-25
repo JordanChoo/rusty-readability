@@ -405,7 +405,7 @@ If you prefer not to use the Wrangler CLI, you can deploy directly through the C
 2. Click **Create** and select **Import a repository**.
 3. Connect your GitHub account if you haven't already, then select the `rusty-readability` repository.
 4. Configure the build settings:
-   - **Build command:** leave empty (`wrangler.toml` defines the build command, which includes installing Rust if needed)
+   - **Build command:** leave empty (the build command in `wrangler.toml` installs Rust, the WASM target, and `worker-build` automatically)
    - **Deploy command:** `npx wrangler deploy`
    - **Root directory:** leave empty (the project root contains `Cargo.toml` and `wrangler.toml`)
 5. Click **Deploy**. Cloudflare will clone the repo, compile the Rust source to WebAssembly, and deploy the Worker.
