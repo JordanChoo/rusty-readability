@@ -1,0 +1,16 @@
+name = "rusty-readability"
+main = "crates/readability-worker/build/worker/shim.mjs"
+compatibility_date = "2026-05-03"
+
+[build]
+command = "cd crates/readability-worker && worker-build --release"
+
+[vars]
+READABILITY_VERSION = "1.0.0"
+READABILITY_MAX_BYTES = "131072"
+READABILITY_BATCH_MAX_BYTES = "1048576"
+READABILITY_BATCH_MAX_TEXTS = "10"
+READABILITY_LOG_LEVEL = "info"
+
+# Secrets (configure via `wrangler secret put`):
+# CSVKEY - authentication token for all non-health endpoints

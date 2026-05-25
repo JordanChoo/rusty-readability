@@ -1,0 +1,575 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Rusty Readability API",
+    "description": "Production-grade readability analysis API implementing 8 canonical formulas with corrected math, actionable feedback, and privacy-preserving design.",
+    "version": "1.0.0",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://rusty-readability.workers.dev",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "csvkey": []
+    }
+  ],
+  "paths": {
+    "/v1/analyze": {
+      "post": {
+        "summary": "Analyze text readability",
+        "operationId": "analyze",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analysis result",
+            "headers": {
+              "ETag": {
+                "description": "Deterministic ETag for caching",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisResult"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not Modified (ETag match)"
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported content type",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "No analyzable text",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/batch": {
+      "post": {
+        "summary": "Batch analyze up to 10 texts",
+        "operationId": "batch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Batch results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/metrics": {
+      "get": {
+        "summary": "List supported metrics and formats",
+        "operationId": "metrics",
+        "responses": {
+          "200": {
+            "description": "Supported metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "metrics": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "primary_score_types": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "input_formats": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "response_formats": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/version": {
+      "get": {
+        "summary": "Engine and word-list versions",
+        "operationId": "version",
+        "responses": {
+          "200": {
+            "description": "Version info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": { "type": "string" },
+                    "engine": { "$ref": "#/components/schemas/EngineMetadata" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/openapi.json": {
+      "get": {
+        "summary": "OpenAPI specification",
+        "operationId": "openapi",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "This specification"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "operationId": "health",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "engine": { "type": "string" },
+                    "version": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "csvkey": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "csvkey"
+      }
+    },
+    "schemas": {
+      "AnalyzeRequest": {
+        "type": "object",
+        "required": ["text"],
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "UTF-8 text to analyze"
+          },
+          "options": {
+            "$ref": "#/components/schemas/AnalyzeOptions"
+          }
+        }
+      },
+      "AnalyzeOptions": {
+        "type": "object",
+        "properties": {
+          "input_format": {
+            "type": "string",
+            "enum": ["auto", "plain", "html", "markdown_lite"],
+            "default": "auto"
+          },
+          "language": {
+            "type": "string",
+            "default": "en-US"
+          },
+          "response_format": {
+            "type": "string",
+            "enum": ["full", "compact", "scores_only"],
+            "default": "full"
+          },
+          "round": {
+            "type": "integer",
+            "default": 2,
+            "minimum": 0,
+            "maximum": 10
+          },
+          "include_stats": {
+            "type": "boolean",
+            "default": true
+          },
+          "include_paragraphs": {
+            "type": "boolean",
+            "default": false
+          },
+          "include_hardest_sentences": {
+            "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 10
+          },
+          "hash_text": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "AnalysisResult": {
+        "type": "object",
+        "required": ["schema_version", "request_id", "scores", "primary"],
+        "properties": {
+          "schema_version": { "type": "string" },
+          "request_id": { "type": "string" },
+          "engine": { "$ref": "#/components/schemas/EngineMetadata" },
+          "input": { "$ref": "#/components/schemas/InputMetadata" },
+          "stats": { "$ref": "#/components/schemas/ResponseStats" },
+          "scores": { "$ref": "#/components/schemas/Scores" },
+          "primary": { "$ref": "#/components/schemas/PrimaryResult" },
+          "paragraphs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ParagraphBreakdown" }
+          },
+          "hardest_sentences": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/HardestSentence" }
+          },
+          "warnings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Warning" }
+          }
+        }
+      },
+      "EngineMetadata": {
+        "type": "object",
+        "properties": {
+          "formula_version": { "type": "string" },
+          "tokenizer_version": { "type": "string" },
+          "syllable_version": { "type": "string" },
+          "character_count_policy": { "type": "string" },
+          "word_lists": {
+            "type": "object",
+            "properties": {
+              "dale_chall": { "type": "string" },
+              "spache": { "type": "string" }
+            }
+          }
+        }
+      },
+      "InputMetadata": {
+        "type": "object",
+        "properties": {
+          "language": { "type": "string" },
+          "input_format_detected": { "type": "string" },
+          "bytes": { "type": "integer" },
+          "text_hash": { "type": "string" },
+          "warnings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Warning" }
+          }
+        }
+      },
+      "ResponseStats": {
+        "type": "object",
+        "properties": {
+          "sentences": { "type": "integer" },
+          "words": { "type": "integer" },
+          "unique_words": { "type": "integer" },
+          "letters": { "type": "integer" },
+          "ari_characters": { "type": "integer" },
+          "graphemes": { "type": "integer" },
+          "paragraphs": { "type": "integer" },
+          "syllables": { "type": "integer" },
+          "polysyllables": { "type": "integer" },
+          "complex_words": { "type": "integer" },
+          "dale_chall_difficult_words": { "type": "integer" },
+          "dale_chall_difficult_percentage": { "type": "number" },
+          "spache_unique_unfamiliar_words": { "type": "integer" },
+          "spache_unique_unfamiliar_percentage": { "type": "number" },
+          "average_words_per_sentence": { "type": "number" },
+          "average_syllables_per_word": { "type": "number" },
+          "average_characters_per_word": { "type": "number" },
+          "longest_sentence_words": { "type": "integer" },
+          "type_token_ratio": { "type": "number" },
+          "hapax_percentage": { "type": "number" },
+          "reading_time_seconds": { "type": "integer" },
+          "reading_time_wpm": { "type": "integer" }
+        }
+      },
+      "Scores": {
+        "type": "object",
+        "properties": {
+          "flesch_reading_ease": { "$ref": "#/components/schemas/Score" },
+          "flesch_kincaid_grade": { "$ref": "#/components/schemas/Score" },
+          "gunning_fog": { "$ref": "#/components/schemas/Score" },
+          "coleman_liau": { "$ref": "#/components/schemas/Score" },
+          "smog": { "$ref": "#/components/schemas/Score" },
+          "automated_readability_index": { "$ref": "#/components/schemas/Score" },
+          "dale_chall": { "$ref": "#/components/schemas/DaleChallScore" },
+          "spache": { "$ref": "#/components/schemas/Score" }
+        }
+      },
+      "Score": {
+        "type": "object",
+        "required": ["raw", "score", "valid", "confidence"],
+        "properties": {
+          "raw": { "type": "number" },
+          "score": { "type": "number" },
+          "normalized_0_100": { "type": "number" },
+          "higher_is_easier": { "type": "boolean" },
+          "interpretation": { "type": "string" },
+          "grade_band": { "type": "string" },
+          "valid": { "type": "boolean" },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          },
+          "error": { "type": "string" },
+          "warnings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Warning" }
+          }
+        }
+      },
+      "DaleChallScore": {
+        "type": "object",
+        "required": ["raw_unadjusted", "raw", "score", "valid", "confidence"],
+        "properties": {
+          "raw_unadjusted": { "type": "number" },
+          "raw": { "type": "number" },
+          "score": { "type": "number" },
+          "grade_band": { "type": "string" },
+          "grade_midpoint": { "type": "number" },
+          "valid": { "type": "boolean" },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          },
+          "error": { "type": "string" },
+          "warnings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Warning" }
+          }
+        }
+      },
+      "PrimaryResult": {
+        "type": "object",
+        "required": ["type", "confidence"],
+        "properties": {
+          "type": { "type": "string" },
+          "score": { "type": "number" },
+          "label": { "type": "string" },
+          "ease_score": { "type": "number" },
+          "ease_label": { "type": "string" },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          },
+          "agreement": { "$ref": "#/components/schemas/Agreement" },
+          "included_metrics": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "excluded_metrics": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ExcludedMetric" }
+          },
+          "drivers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Driver" }
+          },
+          "summary": { "type": "string" }
+        }
+      },
+      "Agreement": {
+        "type": "object",
+        "properties": {
+          "min_grade": { "type": "number" },
+          "max_grade": { "type": "number" },
+          "spread": { "type": "number" },
+          "stability": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          }
+        }
+      },
+      "ExcludedMetric": {
+        "type": "object",
+        "properties": {
+          "metric": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      },
+      "Driver": {
+        "type": "object",
+        "properties": {
+          "factor": { "type": "string" },
+          "direction": { "type": "string" },
+          "evidence": { "type": "string" }
+        }
+      },
+      "ParagraphBreakdown": {
+        "type": "object",
+        "properties": {
+          "index": { "type": "integer" },
+          "words": { "type": "integer" },
+          "sentences": { "type": "integer" },
+          "avg_sentence_length": { "type": "number" },
+          "avg_syllables_per_word": { "type": "number" },
+          "difficulty": { "type": "string" }
+        }
+      },
+      "HardestSentence": {
+        "type": "object",
+        "properties": {
+          "index": { "type": "integer" },
+          "paragraph_index": { "type": "integer" },
+          "words": { "type": "integer" },
+          "syllables_per_word": { "type": "number" },
+          "complex_word_count": { "type": "integer" },
+          "preview": { "type": "string" }
+        }
+      },
+      "Warning": {
+        "type": "object",
+        "required": ["code", "message", "severity"],
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["INFO", "WARNING", "ERROR"]
+          }
+        }
+      },
+      "BatchRequest": {
+        "type": "object",
+        "required": ["texts"],
+        "properties": {
+          "texts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "text"],
+              "properties": {
+                "id": { "type": "string" },
+                "text": { "type": "string" }
+              }
+            },
+            "maxItems": 10
+          },
+          "options": { "$ref": "#/components/schemas/AnalyzeOptions" }
+        }
+      },
+      "BatchResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "type": "string" },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "status": {
+                  "type": "string",
+                  "enum": ["ok", "error"]
+                },
+                "data": { "$ref": "#/components/schemas/AnalysisResult" },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "string" },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

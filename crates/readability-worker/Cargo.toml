@@ -1,0 +1,18 @@
+[package]
+name = "readability-worker"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Cloudflare Worker wrapper for the rusty-readability engine"
+
+[dependencies]
+readability-types = { path = "../readability-types" }
+readability-core = { path = "../readability-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+worker = "0.5"
+console_error_panic_hook = "0.1"
+sha2 = "0.10"
+
+[lib]
+crate-type = ["cdylib"]
