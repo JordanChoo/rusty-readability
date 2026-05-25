@@ -1,0 +1,17 @@
+Dale-Chall Word List Provenance
+================================
+
+Source: Dale, Edgar; Chall, Jeanne S. "Readability Revisited: The New
+Dale-Chall Readability Formula." Brookline Books, 1995.
+
+Original: Dale, Edgar; Chall, Jeanne S. "A Formula for Predicting
+Readability." Educational Research Bulletin, Vol. 27, 1948.
+
+The Dale-Chall 3000-word list has been widely reproduced in educational
+research, textbooks, and open-source readability tools. The word list
+consists of common English words familiar to at least 80% of 4th-grade
+students, as determined by reading comprehension surveys.
+
+This word list is compiled from multiple publicly available sources in
+the educational research domain. It is used here for computational
+readability analysis purposes.

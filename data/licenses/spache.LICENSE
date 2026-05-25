@@ -1,0 +1,16 @@
+Spache Word List Provenance
+============================
+
+Source: Spache, George D. "A New Readability Formula for Primary-Grade
+Reading Materials." The Elementary School Journal, 1953.
+
+Revised: Spache, George D. "Good Reading for Poor Readers." Garrard
+Publishing Co., 1974.
+
+The Spache revised word list consists of approximately 1000 words that
+are familiar to children in grades 1-3. It has been widely reproduced
+in educational research literature and open-source readability tools.
+
+This word list is compiled from multiple publicly available sources in
+the educational research domain. It is used here for computational
+readability analysis purposes.
