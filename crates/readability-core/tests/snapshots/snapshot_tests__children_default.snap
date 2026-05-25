@@ -1,0 +1,153 @@
+---
+source: crates/readability-core/tests/snapshot_tests.rs
+expression: result
+---
+{
+  "schema_version": "1.0",
+  "request_id": "e6c6898efa1ae2e7",
+  "engine": {
+    "formula_version": "1.0.0",
+    "tokenizer_version": "1.0.0",
+    "syllable_version": "1.0.0",
+    "character_count_policy": "ascii_letters",
+    "word_lists": {
+      "dale_chall": "2024-public-domain",
+      "spache": "2024-public-domain"
+    }
+  },
+  "input": {
+    "language": "en-US",
+    "input_format_detected": "plain",
+    "bytes": 304,
+    "text_hash": "e6c6898efa1ae2e7160ed7d7bf22afd24296ce334e46e85e54329720a14008d9",
+    "warnings": []
+  },
+  "stats": {
+    "sentences": 15,
+    "words": 72,
+    "unique_words": 39,
+    "letters": 216,
+    "ari_characters": 216,
+    "graphemes": 304,
+    "paragraphs": 3,
+    "syllables": 73,
+    "polysyllables": 0,
+    "complex_words": 0,
+    "dale_chall_difficult_words": 9,
+    "dale_chall_difficult_percentage": 12.5,
+    "spache_unique_unfamiliar_words": 2,
+    "spache_unique_unfamiliar_percentage": 5.13,
+    "average_words_per_sentence": 4.8,
+    "average_syllables_per_word": 1.01,
+    "average_characters_per_word": 3.0,
+    "longest_sentence_words": 7,
+    "type_token_ratio": 0.54,
+    "hapax_percentage": 38.89,
+    "reading_time_seconds": 18,
+    "reading_time_wpm": 238
+  },
+  "scores": {
+    "flesch_reading_ease": {
+      "raw": 116.18800000000003,
+      "score": 116.19,
+      "normalized_0_100": 100.0,
+      "higher_is_easier": true,
+      "interpretation": "very easy",
+      "valid": true,
+      "confidence": "medium"
+    },
+    "flesch_kincaid_grade": {
+      "raw": -1.7541111111111114,
+      "score": -1.75,
+      "higher_is_easier": false,
+      "grade_band": "below 1st grade",
+      "valid": true,
+      "confidence": "high"
+    },
+    "gunning_fog": {
+      "raw": 1.92,
+      "score": 1.92,
+      "higher_is_easier": false,
+      "grade_band": "2nd grade",
+      "valid": true,
+      "confidence": "high"
+    },
+    "coleman_liau": {
+      "raw": -4.326666666666666,
+      "score": -4.33,
+      "higher_is_easier": false,
+      "grade_band": "below 1st grade",
+      "valid": true,
+      "confidence": "high"
+    },
+    "smog": {
+      "raw": 3.1291,
+      "score": 3.13,
+      "higher_is_easier": false,
+      "grade_band": "3rd grade",
+      "valid": true,
+      "confidence": "high"
+    },
+    "automated_readability_index": {
+      "raw": -4.900000000000002,
+      "score": -4.9,
+      "higher_is_easier": false,
+      "grade_band": "below 1st grade",
+      "valid": true,
+      "confidence": "high"
+    },
+    "dale_chall": {
+      "raw_unadjusted": 2.21183,
+      "raw": 5.84833,
+      "score": 5.85,
+      "grade_band": "5th to 6th grade",
+      "grade_midpoint": 5.5,
+      "valid": true,
+      "confidence": "high"
+    },
+    "spache": {
+      "raw": 1.6603128205128206,
+      "score": 1.66,
+      "higher_is_easier": false,
+      "grade_band": "2nd grade",
+      "valid": true,
+      "confidence": "high"
+    }
+  },
+  "primary": {
+    "type": "consensus_grade",
+    "score": 0.13,
+    "label": "below 1st grade",
+    "ease_score": 116.19,
+    "ease_label": "very easy",
+    "confidence": "low",
+    "agreement": {
+      "min_grade": -4.900000000000002,
+      "max_grade": 5.5,
+      "spread": 10.400000000000002,
+      "stability": "low"
+    },
+    "included_metrics": [
+      "flesch_kincaid_grade",
+      "gunning_fog",
+      "coleman_liau",
+      "smog",
+      "ari",
+      "dale_chall",
+      "spache"
+    ],
+    "summary": "This text is at a below 1st grade reading level."
+  },
+  "warnings": [
+    {
+      "code": "SHORT_TEXT",
+      "message": "Scores are less stable below 100 words.",
+      "severity": "INFO"
+    },
+    {
+      "code": "SMOG_SHORT_SAMPLE",
+      "message": "SMOG is most reliable on 30 or more sentences.",
+      "severity": "WARNING"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+---
+source: crates/readability-core/tests/snapshot_tests.rs
+expression: result
+---
+{
+  "schema_version": "1.0",
+  "request_id": "09ffde247309d396",
+  "engine": {
+    "formula_version": "1.0.0",
+    "tokenizer_version": "1.0.0",
+    "syllable_version": "1.0.0",
+    "character_count_policy": "ascii_letters",
+    "word_lists": {
+      "dale_chall": "2024-public-domain",
+      "spache": "2024-public-domain"
+    }
+  },
+  "input": {
+    "language": "en-US",
+    "input_format_detected": "plain",
+    "bytes": 1690,
+    "text_hash": "09ffde247309d396100ffef255a4da1e0d3a01f3320daff42d9a6d0c360fce07",
+    "warnings": []
+  },
+  "stats": {
+    "sentences": 8,
+    "words": 177,
+    "unique_words": 143,
+    "letters": 1498,
+    "ari_characters": 1498,
+    "graphemes": 1690,
+    "paragraphs": 3,
+    "syllables": 526,
+    "polysyllables": 105,
+    "complex_words": 105,
+    "dale_chall_difficult_words": 92,
+    "dale_chall_difficult_percentage": 51.98,
+    "spache_unique_unfamiliar_words": 117,
+    "spache_unique_unfamiliar_percentage": 81.82,
+    "average_words_per_sentence": 22.13,
+    "average_syllables_per_word": 2.97,
+    "average_characters_per_word": 8.46,
+    "longest_sentence_words": 32,
+    "type_token_ratio": 0.81,
+    "hapax_percentage": 70.62,
+    "reading_time_seconds": 45,
+    "reading_time_wpm": 238
+  },
+  "scores": {
+    "flesch_reading_ease": {
+      "raw": -67.0320444915254,
+      "score": -67.03,
+      "normalized_0_100": 0.0,
+      "higher_is_easier": true,
+      "interpretation": "very confusing",
+      "valid": true,
+      "confidence": "medium"
+    },
+    "flesch_kincaid_grade": {
+      "raw": 28.105416666666674,
+      "score": 28.11,
+      "higher_is_easier": false,
+      "grade_band": "college graduate level",
+      "valid": true,
+      "confidence": "high"
+    },
+    "gunning_fog": {
+      "raw": 32.578813559322036,
+      "score": 32.58,
+      "higher_is_easier": false,
+      "grade_band": "college graduate level",
+      "valid": true,
+      "confidence": "high"
+    },
+    "coleman_liau": {
+      "raw": 32.626214689265524,
+      "score": 32.63,
+      "higher_is_easier": false,
+      "grade_band": "college graduate level",
+      "valid": true,
+      "confidence": "high"
+    },
+    "smog": {
+      "raw": 23.82548963080276,
+      "score": 23.83,
+      "higher_is_easier": false,
+      "grade_band": "college graduate level",
+      "valid": true,
+      "confidence": "high"
+    },
+    "automated_readability_index": {
+      "raw": 29.494533898305086,
+      "score": 29.49,
+      "higher_is_easier": false,
+      "grade_band": "college graduate level",
+      "valid": true,
+      "confidence": "high"
+    },
+    "dale_chall": {
+      "raw_unadjusted": 9.30463163841808,
+      "raw": 12.94113163841808,
+      "score": 12.94,
+      "grade_band": "16th grade and above (college graduate)",
+      "grade_midpoint": 16.0,
+      "valid": true,
+      "confidence": "high"
+    },
+    "spache": {
+      "raw": 10.04521590909091,
+      "score": 10.05,
+      "higher_is_easier": false,
+      "grade_band": "10th grade",
+      "valid": true,
+      "confidence": "high"
+    }
+  },
+  "primary": {
+    "type": "consensus_grade",
+    "score": 26.0,
+    "label": "college graduate level",
+    "ease_score": -67.03,
+    "ease_label": "very confusing",
+    "confidence": "low",
+    "agreement": {
+      "min_grade": 10.04521590909091,
+      "max_grade": 32.626214689265524,
+      "spread": 22.580998780174614,
+      "stability": "low"
+    },
+    "included_metrics": [
+      "flesch_kincaid_grade",
+      "gunning_fog",
+      "coleman_liau",
+      "smog",
+      "ari",
+      "dale_chall",
+      "spache"
+    ],
+    "summary": "This text is at a college graduate level reading level."
+  },
+  "warnings": [
+    {
+      "code": "SMOG_SHORT_SAMPLE",
+      "message": "SMOG is most reliable on 30 or more sentences.",
+      "severity": "WARNING"
+    }
+  ]
+}
