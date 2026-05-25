@@ -6,7 +6,7 @@ const ALLOWED_HEADERS: &str = "Content-Type";
 const MAX_AGE: &str = "86400";
 
 pub fn preflight_response() -> Result<Response> {
-    let mut headers = Headers::new();
+    let headers = Headers::new();
     headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGINS)?;
     headers.set("Access-Control-Allow-Methods", ALLOWED_METHODS)?;
     headers.set("Access-Control-Allow-Headers", ALLOWED_HEADERS)?;
@@ -15,7 +15,7 @@ pub fn preflight_response() -> Result<Response> {
 }
 
 pub fn with_cors(response: Response) -> Result<Response> {
-    let mut headers = Headers::new();
+    let headers = Headers::new();
     headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGINS)?;
 
     let existing = response.headers().clone();

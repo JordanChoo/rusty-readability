@@ -42,7 +42,7 @@ pub fn metrics() -> Result<Response> {
 }
 
 pub fn openapi_spec() -> Result<Response> {
-    let mut headers = worker::Headers::new();
+    let headers = worker::Headers::new();
     headers.set("Content-Type", "application/json")?;
     Ok(Response::ok(OPENAPI_SPEC)?.with_headers(headers))
 }

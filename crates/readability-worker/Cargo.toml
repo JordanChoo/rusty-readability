@@ -10,7 +10,7 @@ readability-types = { path = "../readability-types" }
 readability-core = { path = "../readability-core" }
 serde = { workspace = true }
 serde_json = { workspace = true }
-worker = "0.5"
+worker = "0.8"
 console_error_panic_hook = "0.1"
 sha2 = "0.10"
 
