@@ -68,6 +68,7 @@ The `primary.score` is a consensus grade level derived from all valid formula ou
 | `POST` | `/v1/batch` | Yes | Analyze up to 10 texts |
 | `GET` | `/v1/metrics` | Yes | List supported metrics and formats |
 | `GET` | `/v1/version` | Yes | Engine and word-list versions |
+| `GET` | `/v1/openapi.json` | No | OpenAPI 3.0.3 specification |
 | `GET` | `/health` | No | Health check |
 | `OPTIONS` | `/*` | No | CORS preflight |
 
@@ -97,8 +98,13 @@ Authentication: append `?csvkey=YOUR_KEY` to all authenticated endpoints.
 | `round` | `2` | Decimal places for display rounding |
 | `include_stats` | `true` | Include raw text statistics |
 | `include_paragraphs` | `false` | Per-paragraph difficulty breakdown |
-| `include_hardest_sentences` | `0` | Number of hardest sentences to return (max 10) |
+| `include_hardest_sentences` | `0` | Number of hardest sentences to return |
 | `hash_text` | `true` | Include SHA-256 hash for client correlation |
+| `include_explanations` | `true` | Include human-readable interpretation labels |
+| `include_difficult_words` | `false` | Include Dale-Chall/Spache difficult word details |
+| `include_debug` | `false` | Include internal diagnostic fields |
+| `normalize` | `false` | Normalize scores to a common 0-100 scale |
+| `language` | `en-US` | Language hint (English only in v1) |
 
 ## Response Formats
 
@@ -228,14 +234,15 @@ wrangler deploy
 
 ### Configuration
 
-Environment variables are set in `wrangler.toml`:
+Request limits are compile-time constants in `crates/readability-worker/src/routes.rs`:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `READABILITY_VERSION` | `1.0.0` | Reported in version endpoint |
-| `READABILITY_MAX_BYTES` | `131072` | Max single request body (128 KB) |
-| `READABILITY_BATCH_MAX_BYTES` | `1048576` | Max batch request body (1 MB) |
-| `READABILITY_BATCH_MAX_TEXTS` | `10` | Max texts per batch |
+| Limit | Value | Description |
+|-------|-------|-------------|
+| `MAX_BODY_BYTES` | 262,144 (256 KB) | Max single request body |
+| `MAX_BATCH_BODY_BYTES` | 1,048,576 (1 MB) | Max batch request body |
+| `MAX_BATCH_TEXTS` | 10 | Max texts per batch |
+
+The version reported by `/v1/version` is the crate version from `Cargo.toml` (`env!("CARGO_PKG_VERSION")`).
 
 ### Rollback
 
